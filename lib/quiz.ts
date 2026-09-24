@@ -51,6 +51,11 @@ export const recommendation = (level: Level, goal: string) =>
   `Ваш текущий уровень — ${level}. ${GOAL_TIPS[goal] ?? GOAL_TIPS["Другое"]}`;
 
 export function whatsappLink(lead: Lead): string {
+  // Если задана NEXT_PUBLIC_MANAGER_LINK — обе кнопки на экране результата ведут прямо по ней,
+  // без автосборки текста (удобно, если нужна конкретная ссылка на менеджера/группу/бота).
+  const override = process.env.NEXT_PUBLIC_MANAGER_LINK;
+  if (override) return override;
+
   const num = (process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "").replace(/\D/g, "");
   const text = `Здравствуйте! Я прошёл тест LinGo.\nМой уровень: ${lead.level}.\nРезультат: ${lead.score}/20.\nМоя цель: ${lead.goal}.\nХочу узнать о пробном уроке.`;
   return `https://wa.me/${num}?text=${encodeURIComponent(text)}`;
