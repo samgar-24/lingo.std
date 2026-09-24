@@ -69,3 +69,6 @@ export async function saveLead(lead: Lead): Promise<void> {
     await fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(lead) });
   } catch {}
 }
+
+/** Ссылка, которую получают друзья при «Поделиться». Задаётся NEXT_PUBLIC_SHARE_URL, иначе — адрес текущего сайта. */
+export const shareUrl = () => process.env.NEXT_PUBLIC_SHARE_URL || window.location.origin;

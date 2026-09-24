@@ -2,7 +2,7 @@
 import { useState } from "react";
 import type { Question } from "@/lib/questions";
 import {
-  GOALS, LEVEL_NAMES, AnswerRecord, Goal, Lead, buildTest, evaluate, recommendation, saveLead, shareText, whatsappLink,
+  GOALS, LEVEL_NAMES, AnswerRecord, Goal, Lead, buildTest, evaluate, recommendation, saveLead, whatsappLink,
 } from "@/lib/quiz";
 
 type Step = "welcome" | "contact" | "goal" | "quiz" | "loading" | "result";
@@ -31,8 +31,6 @@ export default function Home() {
   const [answers, setAnswers] = useState<AnswerRecord[]>([]);
   const [picked, setPicked] = useState<string | null>(null);
   const [lead, setLead] = useState<Lead | null>(null);
-  const [showShare, setShowShare] = useState(false);
-  const [copied, setCopied] = useState(false);
 
   const digits = phone.replace(/\D/g, "");
   const contactOk = name.trim().length >= 2 && digits.length >= 10 && digits.length <= 15;
@@ -56,22 +54,9 @@ export default function Home() {
     }, 300);
   }
 
-  async function share() {
+  function share() {
     if (!lead) return;
-    const url = window.location.origin;
-    const text = shareText(lead.level, url);
-    if (navigator.share) {
-      try { await navigator.share({ title: "LinGo", text: `Я прошёл тест LinGo и получил уровень ${lead.level} 🎉\n\nА какой уровень английского у тебя?`, url }); return; }
-      catch (e) { if ((e as Error).name === "AbortError") return; }
-    }
-    setShowShare(true);
-  }
-
-  async function copy() {
-    if (!lead) return;
-    const text = shareText(lead.level, window.location.origin);
-    try { await navigator.clipboard.writeText(text); } catch {}
-    setCopied(true); setTimeout(() => setCopied(false), 2000);
+    window.open(whatsappLink(lead), "_blank");
   }
 
   return (
@@ -167,16 +152,6 @@ export default function Home() {
           </div>
 
           <button className={`${ghost} mt-4`} onClick={share}>Поделиться результатом</button>
-
-          {showShare && (
-            <div className="fade-up mt-4 space-y-3">
-              <button className={ghost} onClick={copy}>{copied ? "Скопировано ✓" : "Скопировать результат"}</button>
-              <a className={`${ghost} block text-center`} target="_blank" rel="noopener noreferrer"
-                href={`https://wa.me/?text=${encodeURIComponent(shareText(lead.level, window.location.origin))}`}>WhatsApp</a>
-              <a className={`${ghost} block text-center`} target="_blank" rel="noopener noreferrer"
-                href={`https://t.me/share/url?url=${encodeURIComponent(window.location.origin)}&text=${encodeURIComponent(`Я прошёл тест LinGo и получил уровень ${lead.level} 🎉\n\nА какой уровень английского у тебя?`)}`}>Telegram</a>
-            </div>
-          )}
         </section>
       )}
     </main>
