@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body { background: #fff; -webkit-tap-highlight-color: transparent; }
+body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: #1c1c1e; }
+input { font-size: 16px; } /* без авто-зума на iOS */
+@keyframes slideIn { from { opacity: 0; transform: translateX(16px); } to { opacity: 1; transform: none; } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.slide-in { animation: slideIn .28s ease-out both; }
+.fade-up { animation: fadeUp .35s ease-out both; }
